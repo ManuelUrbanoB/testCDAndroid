@@ -1,42 +1,17 @@
-pipeline {
-   agent any
-
-   stages {
-      stage('Checkout') {
-        steps {
-          git 'https://github.com/Maur9508/testCDAndroid.git'
+node {
+    stage('Checkout') {
+        logger.stage()
+        timeout(10) {
+            checkout scm
         }
-      }
+    }
 
-      stage('Clean') {
-        steps {
-          sh 'gradle clean'
+    docker.image("murbanob9508/android_fastlane").inside {
+        stage('Clean builds'){
+            logger.stage()
+            timeout(5){
+                sh "gradle clean"
+            }
         }
-      }
-
-      stage('Setup Tools') {
-        steps {
-          sh "cp /Users/manuelurbano/Documents/Keys/CDtest.jks app/keystore.jks"
-        }
-      }
-
-      stage('Create APK') {
-          steps {
-              sh 'gradle bundleRelease'
-          }
-      }
-      
-      stage('Upload to Play Store') {
-          steps {
-            androidApkUpload googleCredentialsId: 'Google play console', apkFilesPattern: '**/*-release.aab', trackName: 'alpha'
-          }
-      }
-      
-      stage('Cleanup Credential') {
-          steps {
-             sh "rm app/keystore.jks"
-          }
-       }
-   }
-
+    }
 }
