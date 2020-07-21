@@ -14,8 +14,9 @@ node {
 
         stage('setup credentials'){
             timeout(5){
-                 withCredentials([file(credentialsId: 'android_keystore', variable: 'android_keystore')]) {
-                     sh "mv $android_keystore > app/keystore.jks"
+                 withCredentials([string(credentialsId: 'android_keystore_cd_ci_test', variable: 'android_keystore')]) {
+                     sh """cat > $WORKSPACE/keystore.jks_64 <<  EOL\n$android_keystore\nEOL"""
+                     sh "base64 -d keystore.jks_64 > app/keystore.jks"
                 }
             }
         }
