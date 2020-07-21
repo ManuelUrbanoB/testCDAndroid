@@ -15,13 +15,13 @@ node {
         stage('setup credentials'){
             timeout(5){
                  withCredentials([string(credentialsId: 'android_keystore_cd_ci_test', variable: 'android_keystore')]) {
-                     sh """cat > $WORKSPACE/keystore.jks_64 <<  EOL\n$android_keystore\nEOL"""
+                     sh """cat > keystore.jks_64 <<  EOL\n$android_keystore\nEOL"""
                      sh "base64 -d keystore.jks_64 > app/keystore.jks"
                 }
             }
         }
 
-        stage('Create APK') {
+        stage('Create AAB') {
             timeout(10){
                 sh 'gradle bundleRelease'
             } 
