@@ -1,0 +1,10 @@
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - googleRobotPrivateKey:
+              projectId: 'Google Play YAML'
+              serviceAccountConfig:
+                json:
+                  filename: 'api_ci_cd_test.json'
+                  secretJsonKey: '$JSON_SECRET'
