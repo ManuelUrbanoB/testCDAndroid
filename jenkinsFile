@@ -7,24 +7,28 @@ pipeline {
           git 'https://github.com/Maur9508/testCDAndroid.git'
         }
       }
-      
+
       stage('Clean') {
         steps {
-          sh "gradle clean"
+          sh 'gradle clean'
         }
       }
-      
+
       stage('Setup Tools') {
-         steps {
-            withCredentials([file(credentialsId: 'keystore', variable: 'my_private_key')]) {
-                sh 'echo $my_private_key > app/keystore.jks'
-            }
-         }
+        steps {
+          sh "cp /Users/manuelurbano/Documents/Keys/CDtest.jks app/keystore.jks"
+        }
+      }
+
+      stage('Create APK') {
+          steps {
+              sh 'gradle bundleRelease'
+          }
       }
       
-       stage('Upload to Play Store') {
+      stage('Upload to Play Store') {
           steps {
-            androidApkUpload googleCredentialsId: 'Google play console', apkFilesPattern: '**/*-release.apk', trackName: 'alpha'  
+            androidApkUpload googleCredentialsId: 'Google play console', apkFilesPattern: '**/*-release.aab', trackName: 'alpha'
           }
       }
       
@@ -32,7 +36,7 @@ pipeline {
           steps {
              sh "rm app/keystore.jks"
           }
-         }
+       }
    }
 
 }
